@@ -1,0 +1,25 @@
+quiet: false
+rubrics: Rubrics 1960 - 1960
+horas: Omnes
+lang2: English
+langfb: English
+votive: Hodie
+priest: false
+oldhymns: false
+nonumbers: false
+noexpand: false
+output: do.epub
+overwrite: false
+novrbars: false
+nocover: false
+nocoverpage: false
+title: Divinum officium
+notitlepage: false
+index: false
+antepost: false
+nocomments: false
+noomitted: false
+nosplit: false
+source: https://www.divinumofficium.com
+datefrom: 05-22-2025
+dateto: 05-31-2025
