@@ -11,6 +11,7 @@ This is a Node.js port of the original [Crystal implementation](https://gitlab.c
 - Bilingual side-by-side text display
 - Multiple rubrics versions (Divino Afflatu, Reduced 1955, Rubrics 1960, etc.)
 - Customizable hours selection (all hours or specific ones)
+- **Smart sentence splitting** for e-reader compatibility (optional)
 - Optional features like verse numbers, comments, fonts, etc.
 - Votive office support (Defunctorum, Parvum B.M.V.)
 
@@ -76,6 +77,7 @@ npm start -- --votive Defunctorum --lang1 Latin --output defunctorum.epub
 - `--nocomments` - Omit liturgical comments
 - `--nonumbers` - Omit verse numbers
 - `--noexpand` - Don't expand psalm intonations
+- `--nosplit` - Disable sentence splitting (enabled by default for traditional behavior)
 - `--title` - Custom EPUB title
 - `--fontdir` - Directory with custom fonts to embed
 
@@ -109,6 +111,12 @@ npm start -- --datefrom 04-13-2025 --dateto 04-20-2025 --lang1 Latin --lang2 Eng
 npm start -- --datefrom 01-01-2025 --dateto 01-31-2025 --lang1 English --rubrics 1960 --title "January 2025 Breviary"
 ```
 
+### E-Reader Optimized EPUB
+```bash
+# Enable sentence splitting for better e-reader display
+npm start -- --datefrom 12-25-2024 --dateto 01-01-2025 --lang1 Latin --lang2 English --nosplit=false --title "Christmas Octave"
+```
+
 ## Configuration
 
 You can create a `config.yaml` file for frequently used settings:
@@ -119,6 +127,28 @@ lang2: English
 rubrics: DA
 horas: Omnes
 priest: true
+nosplit: true  # Default: no sentence splitting (traditional layout)
+```
+
+### Sentence Splitting Feature
+
+By default, text is kept in single rows per line for the traditional layout. However, you can enable **sentence splitting** for better e-reader compatibility:
+
+- **Default behavior (`nosplit: true`)**: Traditional single-row layout
+- **E-reader optimized (`nosplit: false` or `--nosplit=false`)**: Splits sentences at periods into separate rows
+
+The splitting feature includes:
+- **Smart punctuation detection**: Finds optimal break points at periods, semicolons, colons, and commas
+- **Psalm preservation**: Automatically detects and preserves psalm verses as single rows
+- **Fuzzy alignment**: Intelligently matches Latin/English sentence breaks using semantic context
+- **Prayer-aware**: Recognizes common prayer patterns for better break placement
+
+```bash
+# Traditional layout (default)
+npm start -- --datefrom 01-01-2025 --dateto 01-07-2025
+
+# E-reader optimized with sentence splitting
+npm start -- --datefrom 01-01-2025 --dateto 01-07-2025 --nosplit=false
 ```
 
 ## Troubleshooting

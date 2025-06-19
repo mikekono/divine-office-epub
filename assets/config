@@ -19,7 +19,7 @@ index: false
 antepost: false
 nocomments: false
 noomitted: false
-nosplit: false
+nosplit: true
 source: https://www.divinumofficium.com
 datefrom: 05-22-2025
 dateto: 05-31-2025
