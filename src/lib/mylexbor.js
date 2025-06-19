@@ -857,10 +857,106 @@ class EnhancedDOM {
   }
 
   /**
+   * Convert accented characters to ASCII equivalents
+   * @param {string} text - Text to convert
+   * @returns {string} - ASCII-converted text
+   */
+  toAscii(text) {
+    if (!text) return text;
+    
+    // Common Latin character mappings
+    const charMap = {
+      // Vowels with macrons, breves, etc.
+      'ā': 'a', 'ă': 'a', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ǽ': 'ae',
+      'ē': 'e', 'ĕ': 'e', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+      'ī': 'i', 'ĭ': 'i', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+      'ō': 'o', 'ŏ': 'o', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe',
+      'ū': 'u', 'ŭ': 'u', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+      'ȳ': 'y', 'ỳ': 'y', 'ý': 'y', 'ŷ': 'y', 'ÿ': 'y',
+      
+      // Uppercase versions
+      'Ā': 'A', 'Ă': 'A', 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE', 'Ǽ': 'AE',
+      'Ē': 'E', 'Ĕ': 'E', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+      'Ī': 'I', 'Ĭ': 'I', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+      'Ō': 'O', 'Ŏ': 'O', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Œ': 'OE',
+      'Ū': 'U', 'Ŭ': 'U', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+      'Ȳ': 'Y', 'Ỳ': 'Y', 'Ý': 'Y', 'Ŷ': 'Y', 'Ÿ': 'Y',
+      
+      // Common consonants
+      'ç': 'c', 'Ç': 'C',
+      'ñ': 'n', 'Ñ': 'N',
+      'ß': 'ss',
+      
+      // Special liturgical characters
+      'ǽ': 'ae', 'Ǽ': 'AE',
+      
+      // Common punctuation and symbols that might cause issues
+      '\u2018': "'", '\u2019': "'", '\u201C': '"', '\u201D': '"', '\u2013': '-', '\u2014': '-',
+      '\u2026': '...', '\u20AC': 'EUR', '\u00A3': 'GBP', '\u00A9': '(c)', '\u00AE': '(r)',
+      
+      // Mathematical and other symbols
+      '×': 'x', '÷': '/', '±': '+/-', '≤': '<=', '≥': '>='
+    };
+    
+    let result = text;
+    for (const [accented, ascii] of Object.entries(charMap)) {
+      result = result.replace(new RegExp(accented, 'g'), ascii);
+    }
+    
+    return result;
+  }
+
+  /**
+   * Convert all text content to ASCII if ascii option is enabled
+   * @returns {EnhancedDOM} - The current instance
+   */
+  convertToAscii() {
+    if (!getOpt("ascii")) return this;
+    
+    // Find all text nodes and convert them
+    const walker = this.document.createTreeWalker(
+      this.document.body || this.document,
+      this.dom.window.NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+    
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      textNodes.push(node);
+    }
+    
+    textNodes.forEach(textNode => {
+      if (textNode.textContent) {
+        textNode.textContent = this.toAscii(textNode.textContent);
+      }
+    });
+    
+    // Also convert attribute values that might contain text
+    const allElements = this.css("*");
+    allElements.forEach(element => {
+      // Convert title attributes
+      if (element.hasAttribute('title')) {
+        element.setAttribute('title', this.toAscii(element.getAttribute('title')));
+      }
+      
+      // Convert alt attributes
+      if (element.hasAttribute('alt')) {
+        element.setAttribute('alt', this.toAscii(element.getAttribute('alt')));
+      }
+    });
+    
+    return this;
+  }
+
+  /**
    * Get the HTML content
    * @returns {string} - The HTML content
    */
   html() {
+    // Convert to ASCII if option is enabled, but do it last
+    this.convertToAscii();
     return this.dom.serialize();
   }
 }

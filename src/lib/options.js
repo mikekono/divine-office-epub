@@ -365,7 +365,8 @@ export function init() {
     .option('--nonumbers', 'do not number verses in psalms, canticles, biblical reading')
     .option('--noexpand', 'do not expand common prayes')
     .option('--nofancychars', 'use + for crosses, VR for ℣℟')
-    .option('--nosplit', 'do not split sentences into separate rows');
+    .option('--nosplit', 'do not split sentences into separate rows')
+    .option('--ascii', 'convert accented characters to ASCII equivalents for better compatibility');
   
   // Program options
   program.addHelpText('before', '\nProgram options:');

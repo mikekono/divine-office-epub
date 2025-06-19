@@ -78,6 +78,7 @@ npm start -- --votive Defunctorum --lang1 Latin --output defunctorum.epub
 - `--nonumbers` - Omit verse numbers
 - `--noexpand` - Don't expand psalm intonations
 - `--nosplit` - Disable sentence splitting (enabled by default for traditional behavior)
+- `--ascii` - Convert accented characters (ǽ, ā, etc.) to ASCII equivalents for better compatibility
 - `--title` - Custom EPUB title
 - `--fontdir` - Directory with custom fonts to embed
 
@@ -117,6 +118,12 @@ npm start -- --datefrom 01-01-2025 --dateto 01-31-2025 --lang1 English --rubrics
 npm start -- --datefrom 12-25-2024 --dateto 01-01-2025 --lang1 Latin --lang2 English --nosplit=false --title "Christmas Octave"
 ```
 
+### ASCII-Compatible Version (for MOBI conversion)
+```bash
+# Convert accented characters to ASCII for better MOBI compatibility
+npm start -- --datefrom 12-25-2024 --dateto 01-01-2025 --lang1 Latin --lang2 English --ascii --title "Christmas Octave"
+```
+
 ## Configuration
 
 You can create a `config.yaml` file for frequently used settings:
@@ -128,6 +135,7 @@ rubrics: DA
 horas: Omnes
 priest: true
 nosplit: true  # Default: no sentence splitting (traditional layout)
+ascii: false   # Default: preserve accented characters
 ```
 
 ### Sentence Splitting Feature
